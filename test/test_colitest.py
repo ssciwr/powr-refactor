@@ -24,11 +24,13 @@ MODEL_DATA_REF = np.array(
 def run_colitest(get_chain, colitest_options):
     # need aliases and env for this to run on CI
     # run colitest
+
     # here we need to run with and without nonopt
     if colitest_options is None:
         colitest_options = ""
     colitest_path = "${POWR_WORK}/wrjobs/colitest1"
     colitest_command = colitest_path + colitest_options
+#    try:
     temp = subprocess.run(
         colitest_command,
         shell=True,
@@ -37,8 +39,12 @@ def run_colitest(get_chain, colitest_options):
         capture_output=True,
         text=True,
     )
-    print(temp.stdout)
+#    except Exception as error:
     print(temp.stderr)
+    #print(error)
+
+    print(temp.stdout)
+
     os.system("cat ${POWR_WORK}/output/colitest1.cpr")
     yield "ran colitest"
     os.system("rm -rf ${POWR_WORK}/tmp_data")
@@ -145,3 +151,100 @@ def test_colitest_run(set_vars, run_colitest):
     # the original file length is 2233856, so if the coli job does not run
     # the test will fail and the model file length will be 2233856
     assert np.allclose(data_np[256138:256149], MODEL_DATA_REF)
+
+
+    colitest_file_reference = set_vars / "../test/data/colitest1.out"
+    colitest_file = set_vars / "output/colitest1.out"
+
+    with open(colitest_file_reference, "r") as f:
+        output = f.read()
+
+    with open(colitest_file, "r") as f:
+        output_for_test = f.read()
+
+    out1 = output.find("Maximum Opacity at  1: K= 41042;")
+    out2 = output_for_test.find("Maximum Opacity at  1: K= 41042;")
+    assert out1 == out2
+
+    # out1 = output.find("Lambda=     303.771;")
+    # out2 = output_for_test.find("Lambda=     303.771;")
+    # assert out1 == out2
+
+    # out1 = output.find("Opacity= 0.15260E+05;")
+    # out2 = output_for_test.find("Opacity= 0.15260E+05;")
+    # assert out1 == out2
+
+    out1 = output.find("Opacities set to 0.01 * Background Opacity at    198 frequencies")
+    out2 = output_for_test.find("Opacities set to 0.01 * Background Opacity at    198 frequencies")
+    assert out1 !=-1 and out2 !=-1
+
+    out1 = output.find("SMALLPOP=   0.100E-07 chosen different from recommended default   0.100E-11")
+    out2 = output_for_test.find("SMALLPOP=   0.100E-07 chosen different from recommended default   0.100E-11")
+    assert out1!=-1 and out2!=-1
+
+    out1 = output.find("NEGATIVE BOUND-BOUND COLLISIONAL CROSS SECTION DETECTED (LEVELS: UP=   5, LOW=   2)")
+    out2 = output_for_test.find("NEGATIVE BOUND-BOUND COLLISIONAL CROSS SECTION DETECTED (LEVELS: UP=   5, LOW=   2)")
+    assert out1!=-1 and out2!=-1
+
+    out1 = output.find("MODEL START 21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17")
+    out2 = output_for_test.find("MODEL START 21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17")
+    assert out1!=-1 and out2!=-1
+
+    # out1 = output.find("MAX: 67.1896  (G  4....1e  L=  7)       2ND: 65.5906  (G  4....1e  L=  8)")
+    # out2 = output_for_test.find("MAX: 67.1896  (G  4....1e  L=  7)       2ND: 65.5906  (G  4....1e  L=  8)")
+    # assert out1 == out2
+
+    # out1 = output.find("MIN:  0.5000  (G  5....6e  L=  7)       2ND:  0.5000  (G  5....6e  L=  8)")
+    # out2 = output_for_test.find("MIN:  0.5000  (G  5....6e  L=  7)       2ND:  0.5000  (G  5....6e  L=  8)")
+    # assert out1 == out2
+
+    # out1 = output.find("DEPTH POINTS CONSIDERED:    7  TO   50               CORMAX=66.1896     LOG=  1.82")
+    # out2 = output_for_test.find("DEPTH POINTS CONSIDERED:    7  TO   50               CORMAX=66.1896     LOG=  1.82")
+    # assert out1 == out2
+
+    out1 = output.find("GAMMAC=     80.0   GAMMAL=    800.0")
+    out2 = output_for_test.find("GAMMAC=     80.0   GAMMAL=    800.0")
+    assert out1!=-1 and out2!=-1
+
+    out1 = output.find("DELTAC=     -1.0   GAMMAR=    800.0   GAMMAD=      0.0")
+    out2 = output_for_test.find("DELTAC=     -1.0   GAMMAR=    800.0   GAMMAD=      0.0")
+    assert out1!=-1 and out2!=-1
+
+    out1 = output.find("CORRECTIONS REDUCED BY FACTOR 0.50")
+    out2 = output_for_test.find("CORRECTIONS REDUCED BY FACTOR 0.50")
+    assert out1!=-1 and out2!=-1
+
+    #######################################################################
+
+    colitest_plot_reference = set_vars / "../test/data/colitest1.plot"
+    colitest_plot = set_vars / "output/colitest1.plot"
+
+    with open(colitest_plot_reference, "r") as f:
+        output = f.read()
+
+    with open(colitest_plot, "r") as f:
+        output_for_test = f.read()
+
+    out1 = output.find("0.69897000      0.72478278      0.74914704      0.77221675      0.79412257")
+    out2 = output_for_test.find("0.69897000      0.72478278      0.74914704      0.77221675      0.79412257")
+    assert out1 == out2
+
+    out1 = output.find("-21.832692      -22.997487      -24.157987")
+    out2 = output_for_test.find("-21.832692      -22.997487      -24.157987")
+    assert out1 == out2
+
+    out1 = output.find("0.69897000      0.72478278      0.74914704      0.77221675      0.79412257 ")
+    out2 = output_for_test.find("0.69897000      0.72478278      0.74914704      0.77221675      0.79412257 ")
+    assert out1 == out2
+
+    out1 = output.find("PLOT: HSUM: M21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17 JOB No.     54")
+    out2 = output_for_test.find("PLOT: HSUM: M21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17 JOB No.     54")
+    assert out1 == out2
+
+    out1 = output.find("PLOT   :HSUM: M21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17 JOB No.     54")
+    out2 = output_for_test.find("PLOT   :HSUM: M21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17 JOB No.     54")
+    assert out1 == out2
+
+    out1 = output.find("PLOT   :HSUM: M21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17 JOB No.     54")
+    out2 = output_for_test.find("PLOT   :HSUM: M21/07/02    16:50:14    70795/0.4D/1600 L=5.3 N=1.5% C=1E-4 Fe=1.4E-3 D4 WNE 10-17 JOB No.     54")
+    assert out1 == out2
