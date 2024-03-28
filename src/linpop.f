@@ -5,7 +5,7 @@
      >   DM, V1,V2,GAMMAC,GAMMAL,EPSILON,TOLD,
      >   NOTEMP,DELTAC,GAMMAR,IPRICC,IPRILC,MODHEAD,JOBNUM,IFRRA,ITORA,
      >   RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     >   VELO,GRADI,VDOPDD,VDOPUNIT,NFLDIM,PHI,PWEIGHT,
+     >   VELO,GRADI,VDOPDD,VDOPUNIT,PHI,PWEIGHT,
      >   LASTIND, LASTINDAUTO, LASTINDALL,
      >   SIGMAKI,
      >   ND,LSRAT,CRATE,RRATE,RATCO,ALPHA,SEXPO, 
@@ -14,14 +14,14 @@
      >   LINE,ALTESUM,NFEDGE,NOM,NATOM,ABXYZ,KODAT,NFIRST,
      >   SCRATCH,ATEST,BTEST,DTEST,BRS,BRSP,BRY,XMAX,IBLENDS,MAXLAP,
      >   XLAMZERO,ITBR,NBRCANC,NLAST,SIGMAFF,MAXION,NFL,IONGRND,IONAUTO,
-     >   NAUTO,MAXAUTO,LOWAUTO,WAUTO,EAUTO,AAUTO,DRRATEN,IADR16,RDIEL,
-     >   RAUTO,DRJLW,DRJLWE,DRLJW,NSCHAR,MAXATOM,BETA,PHIL,NBLENDS,
+     >   NAUTO,LOWAUTO,WAUTO,EAUTO,AAUTO,DRRATEN,IADR16,RDIEL,
+     >   RAUTO,DRJLW,DRJLWE,DRLJW,NSCHAR,BETA,PHIL,NBLENDS,
      >   SIGMATHK,SEXPOK,EDGEK,XDATA,
      >   KONTNUP,KONTLOW,LASTKON,KODRNUP,KODRLOW,LASTKDR,KEYCBF,NATOUT,
      >   BRRESET,NOCON,ENOLD,TEFF,
      >   KRUDAUT, 
-     >   BAUTO, BAUTO_ABORT, CKONVER, SMALLPOP, BUNLU, 
-     >   DENSCON, FILLFAC, ENTOTDENS,
+     >   BAUTO, CKONVER, SMALLPOP, BUNLU, 
+     >   FILLFAC, ENTOTDENS,
      >   WFELOW, WFENUP, GAMMAD, NKONVER, WJC, 
      >   OPC, BPLOCC, LPLOCC, KPLOCC, KANAL, 
      >   LASTFE, WJCMIN, NKONV_THRESH,
@@ -35,7 +35,7 @@ C***  IRON
      >   DFEINDR, SIGMAFE, OPAFE, ETAFE, 
      >   INDEXMAX, BFEMODEL, BNUEFE, BDIAG, 
 C***
-     >   NF2, NDDIM, 
+     >   NF2,  
      >   XKMIN, XKMAX, XKMID, XKRED, XKRED_CORE, XKBLUE_CORE, 
      >   BXJLAPPNEW, BXJCAPPNEW, BNEWOPER, BXJLAPPCORE,
      >   XJL_PLOTDATA, XJC_PLOTDATA_I, 
@@ -52,9 +52,8 @@ C***  Split artistic
 C***  Fe rate and Zero Rate settings
      >   CORRS, DEXFAC, bFeTCORR, iZRType,
 C***  Two-point broyden and auto modify temperature settings
-     >   bUseTWOPNT, iAMT, 
-C***  Contants consitence check
-     >   NDIM_steal, MAXIND_steal, NFDIM_steal, MAXFEIND_steal)
+     >   bUseTWOPNT, iAMT)
+
 C*******************************************************************************
 C***  CALCULATION OF NEW NLTE POPULATION NUMBERS (ARRAY POPNUM)
 C***  RADIATIVE RATES ARE CALCULATED WITH THE SCHARMER RADIATION FIELD
@@ -71,20 +70,14 @@ C***  Throughout LINPOP, T(L) is the actual (TNEW) temperature after it
 C***  was updated by TEMPCORR. This might be considered to be changed, 
 C***  i.e. SOLD might be better estimated with TOLD. (???)
 C*******************************************************************************
+      USE params
 
       IMPLICIT NONE
 
-      INTEGER, PARAMETER :: NDIM    =        2560   !must be exactly as in STEAL
-      INTEGER, PARAMETER :: NFDIM   = 2*NDIM + 400  !must be exactly as in STEAL
-      INTEGER, PARAMETER :: MAXIND  =       45000   !must be exactly as in STEAL
-      INTEGER, PARAMETER :: MAXFEIND  =       2500  !must be exactly as in STEAL
-      
-      
-      
-      INTEGER, INTENT(IN) :: ND, NDDIM, N, NF, JOBNUM, MAXION, NFLDIM,
+      INTEGER, INTENT(IN) :: ND, N, NF, JOBNUM, MAXION, 
      >                       MAXLAP, NATOM, LASTKDR, MAXFINE, INDEXMAX,
-     >                       IFF_MAX, IFF_MAX_MS, MAXATOM, LASTKON,
-     >                       LASTIND, MAXAUTO, LASTINDAUTO, LASTINDALL,
+     >                       IFF_MAX, IFF_MAX_MS, LASTKON,
+     >                       LASTIND, LASTINDAUTO, LASTINDALL,
      >                       NKONV_THRESH
 
       INTEGER, DIMENSION(MAXFEIND) :: INDRB, INDRF, IFRBSTA, IFRBEND,
@@ -199,7 +192,7 @@ C*******************************************************************************
      >           NPLUS1, NPLUS2, NOUT, ITBR, NBRCANC, NKONVER, IADR16,
      >           INEGMIN, INEGMAX, LNEGMIN, LNEGMAX, NEGINTL, NEGINTC,
      >           INEGMINC, INEGMAXC, LNEGMINC, LNEGMAXC, NFL, KANAL, LL,
-     >           KON, NUP, LOW, LPLOCC, KPLOCC, ICOUNT, NA, NFIRNA, NF2,
+     >           KON, NUP, LOW, LPLOCC, KPLOCC, NA, NFIRNA, NF2,
      >           NLANA, NSCHAR, ION, NAUTO, LASTFE, NLINE, MAXFEACT,
      >           IPLOT_XJCAPP, IPLOT_XJLAPP, LPLOT_XJCAPP, ITABS, IERR,
      >           NITER_PLOT_JAPP, IWARN_NEG_XJCAPP, IWARN_NEG_XJLAPP,
@@ -210,19 +203,19 @@ C*******************************************************************************
      >           nTest, iZRType, iAMT
       REAL :: RSTAR, GAMMAC, GAMMAD, GAMMAL, GAMMAR, DELTAC, EPSILON, 
      >        EPSDN, TL, TLOLD, EDGE, EDGELAM, ERXMIN, WJCMIN, DELTAX,
-     >        VDOPUNIT, VDOPFE, WAVENUM, XMAX, OPARL, FN, FNOLD, 
-     >        FTN, FTNOLD, TSAVE, TMID, DTDR, TEFF, TLAST, ALOMIN,
+     >        VDOPUNIT, VDOPFE, WAVENUM, XMAX, FN, FNOLD, 
+     >        FTN, FTNOLD, TEFF, ALOMIN,
      >        ENE, BRRESET, BRRES2, TLOG, ROOTTL, XLAM, XLAMLOG, W, W3,
      >        PRESIG, GIII, POPMIN, OPATHOM, DXFE, XLAM0FE, DFEINDR,
      >        SUM, ENMIN, ENMAX, ENNEW, XLAM_FINE_START, XLAM_FINE_END,
      >        IFF_N_MS, SMALLPOP, CORRLAST,
-     >        TLxj, DTDRplus, DTDRminus, DTDRtest, DTDRorg
+     >        TLxj
 
 C***  Iteration Sequence output ("Scharmer-Tapete")
       CHARACTER(1), DIMENSION(100) :: ITCODE        !@todo: warum nicht auf ITMAX dimensionieren?
 
 C***  tiefenabh. clumping nach goetz
-      REAL, DIMENSION(NDDIM) :: DENSCON, FILLFAC
+      REAL, DIMENSION(NDDIM) :: FILLFAC
 
 C***  AUTO_MODIFY FACILITY
       CHARACTER(3) :: CHR
@@ -235,7 +228,7 @@ C***  AUTO_MODIFY FACILITY
       CHARACTER(80) :: CHR1, CHR2
       CHARACTER(100) :: MODHEAD
       LOGICAL :: KONVER, NOTEMP, BROYDEN, TWOPNT, NOCON, BNUEFE,
-     >           BRIMP, BRIMP2, BAUTO, BAUTO_ABORT, BNEWTONRESET,
+     >           BRIMP, BRIMP2, BAUTO, BNEWTONRESET,
      >           BSUM, BUNLU, BPLOCC, BFECHECK, BFEWING, BFEMODEL,
      >           BXJLAPPNEW, BXJCAPPNEW, BXJLAPPCORE, BNEWOPER,
      >           BPLOTAPP, bFFASSET, bUseTWOPNT 
@@ -273,28 +266,6 @@ C***  Physical Constants
       bUseDMFILE = .TRUE.                   !Default: DMFILE is used
       iPopMinViolations = 0
 
-C***  Check for consitency of the constants
-      IF (NDIM /= NDIM_steal) THEN
-        WRITE (hCPR,*) 'LINPOP> Constant NDIM not consistent!'
-        WRITE (hCPR,*) ' STEAL vs. LINPOP: ', NDIM_steal, NDIM
-        STOP 'FATAL ERROR IN STEAL'
-      ENDIF
-      IF (MAXIND /= MAXIND_steal) THEN
-        WRITE (hCPR,*) 'LINPOP> Constant MAXIND not consistent!'
-        WRITE (hCPR,*) ' STEAL vs. LINPOP: ', MAXIND_steal, MAXIND
-        STOP 'FATAL ERROR IN STEAL'
-      ENDIF
-      IF (NFDIM /= NFDIM_steal) THEN
-        WRITE (hCPR,*) 'LINPOP> Constant NFDIM not consistent!'
-        WRITE (hCPR,*) ' STEAL vs. LINPOP: ', NFDIM_steal, NFDIM
-        STOP 'FATAL ERROR IN STEAL'
-      ENDIF
-      IF (MAXFEIND /= MAXFEIND_steal) THEN
-        WRITE (hCPR,*) 'LINPOP> Constant MAXFEIND not consistent!'
-        WRITE (hCPR,*) ' STEAL vs. LINPOP: ', MAXFEIND_steal, MAXFEIND
-        STOP 'FATAL ERROR IN STEAL'
-      ENDIF
-      
 C***  Operator Versions:
       WRITE (hCPR,*)
       WRITE (hCPR,'(5A12)')
@@ -459,8 +430,8 @@ C***  Initialize counters for ZERO_RATES
         LMINZERORATES(J) = ND+1
         LMAXZERORATES(J) = 0
       ENDDO
-
-      IF (bLAMAPPCOLI) THEN
+C problem occurs below IU: opt version n=1718908448
+      IF (bLAMAPPCOLI) THEN 
         WRITE (hCPR,'(A)') ' ALO version: XJLAPP COLI'
       ENDIF
       IF (iBLOCKINVERSION > 1) THEN
@@ -535,6 +506,7 @@ C***          FORMULATION OF RADIATIVE EQUILIBRIUM IN TEMPEQ
 
 C***  NEWTON - RAPHSON - ITERATION  ********************************************
 C***  THE ITERATION STARTS FROM THE OLD POP. NUMBERS
+C IU n is here some absurd number
       DO J=1,N
         EN(J)=POP1(L,J)
         EN1(J)=EN(J)

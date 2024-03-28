@@ -1,23 +1,28 @@
-      SUBROUTINE COLIMO(K, ND, RADIUS, OPAK, ETAK, ETAKNOTH, 
+C*** ISU unused variable
+C    >             OPAKNOTH, 
+      SUBROUTINE COLIMO(K, ND, RADIUS, OPAK, ETAKNOTH, 
      >             OPAKNOTH, 
-     >             S, XJLMO, XJLMOR2, XHLMO, 
+C    >             S, XJLMO, XJLMOR2, XHLMO, 
+     >             XJLMO, XJLMOR2, XHLMO, 
      >             XJLMO_OLD, XHLMO_OLD, 
      >             DLF, DLH, GLF, GLH, VLF, VLH, 
      >             GLF2, GLH2, VLF2, VLH2, 
      >             QLF, QLH, OPAKH, 
      >             EDDIF, EDDIFO, EDDIG, EDDIGO,
-     >             EDDIHOUT, EDDIHIN, EDDIHOUTO,
-     >             EDDINOUT, EDDININ, EDDINOUTO,
+C    >             EDDIHOUT, EDDIHIN, EDDIHOUTO,
+     >             EDDIHOUT, EDDIHIN,
+C    >             EDDINOUT, EDDININ, EDDINOUTO,
      >             ALH, BLH, CLH, 
      >             A, B, C, W, DX, 
-     >             BCORE, DBDR, XIMINUS, BPDONE, XLAMK,
+C    >             BCORE, DBDR, XIMINUS, BPDONE, XLAMK,
+     >             BCORE, XLAMK,
      >             DJDSMOD, bALOTri, DJDSMOU, DJDSMOL,
      >             FULFIL0, FULFIL1, BPLOT, BPLOT2, IPLOT, 
      >             IW_COLIMO_F, IW_COLIMO_G, IW_COLIMO_G2, BSTATIC, 
      >             CLMOETA, CLMOOPA, XHI, 
      >             RADIUS2, EPSG, GEPSB, GEPSBO, 
-     >             XHOM, XHOMO, XNOM, XNOMO, 
-     >             EDDIHOUTP, EDDINOUTP, EDDIHOUTOP, EDDINOUTOP,
+C    >             XHOM, XHOMO, XNOM, XNOMO, 
+C    >             EDDIHOUTP, EDDINOUTP, EDDIHOUTOP, EDDINOUTOP,
      >             IWARNJMNEG)
 
 
@@ -26,7 +31,9 @@ C***  Setup and solution of the tridiagonal equation
 C***  -A, B, -C and W are calculated
 C********************************************************
 
-      DIMENSION RADIUS(ND), OPAK(ND), ETAK(ND), ETAKNOTH(ND), S(ND)
+C*** ISU unused variable
+C     DIMENSION RADIUS(ND), OPAK(ND), ETAK(ND), ETAKNOTH(ND), S(ND)
+      DIMENSION RADIUS(ND), OPAK(ND), ETAKNOTH(ND)
       DIMENSION OPAKNOTH(ND)
       DIMENSION XJLMO(ND), XJLMOR2(ND), XHLMO(ND)
       DIMENSION XJLMO_OLD(ND), XHLMO_OLD(ND)
@@ -38,13 +45,17 @@ C********************************************************
       DIMENSION EDDIF(ND), EDDIFO(ND)
       DIMENSION EDDIG(ND-1), EDDIGO(ND-1)
       DIMENSION ALH(ND-1), BLH(ND-1), CLH(ND-1)
-      DIMENSION A(ND), B(ND), C(ND), D(ND), E(ND), W(ND)
-      DIMENSION DINV(ND), DJDSMOD(ND), DJDSMOU(ND), DJDSMOL(ND)
+C*** ISU unused variable
+C     DIMENSION A(ND), B(ND), C(ND), D(ND), E(ND), W(ND)
+      DIMENSION A(ND), B(ND), C(ND), W(ND)
+C     DIMENSION DINV(ND), DJDSMOD(ND), DJDSMOU(ND), DJDSMOL(ND)
+      DIMENSION DJDSMOD(ND), DJDSMOU(ND), DJDSMOL(ND)
       DIMENSION FULFIL0(ND), FULFIL1(ND)
       DIMENSION CLMOETA(ND), CLMOOPA(ND)
       DIMENSION RADIUS2(ND)
       DIMENSION EPSG(ND), GEPSB(ND), GEPSBO(ND)
-      LOGICAL BPDONE, BPLOT, BPLOT2, BSTATIC, bALOTri
+C     LOGICAL BPDONE, BPLOT, BPLOT2, BSTATIC, bALOTri
+      LOGICAL BPLOT, BPLOT2, BSTATIC, bALOTri
 
       INTEGER :: IWARNJMNEG
       
@@ -284,7 +295,7 @@ C***    Protocol for warnings for negative results in XJL (=W now)
 
 C***    Set J to zero, if small or neg. values
 C***    as recommended by Andreas - wrh  5-Mar-2019
-        IF (W(L) < EXP(-499.)) THEN
+        IF (W(L) < EXP(-499.D0)) THEN
           XJLMO(L) = 0.
           XJLMOR2(L) = 0.
         ELSE
@@ -301,7 +312,7 @@ C***  Calculation of the flux from the moment equation (XHLMO)
 C***  again suppressing neg. values as recommended by Andreas 
 C***  - wrh 5-Mar-2019
       DO L=1, ND-1
-        IF (W(L) < EXP(-499.)) THEN
+        IF (W(L) < EXP(-499.D0)) THEN
           XHLMO(L) = 0.
         ELSE
           XHLMO(L) = ALH(L)/QLH(L)*
