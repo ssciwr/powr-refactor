@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest]
         # os: [ubuntu-latest, macos-latest]
         toolchain:
-          - {compiler: intel-classic, version: '2021.10'}
+          - {compiler: intel, version: '2023.2'}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -31,6 +31,7 @@ jobs:
       with:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
+        install_mkl: "true"
     - name: get compiler version
       run: ${{ env.FC }} --version
       env:
@@ -54,4 +55,6 @@ jobs:
         python -m pip install -r requirements.txt
     - name: run integration tests
       run: |
+        pwd
+        ls
         python -m pytest -svv test/test_wrstart.py
